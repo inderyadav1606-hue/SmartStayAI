@@ -1,0 +1,56 @@
+/* 🌟 1. Global Smooth Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply animation to the main dashboard */
+div.block-container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* 🌟 2. Modern Gradient Title */
+.big-font {
+    font-size: 60px !important;
+    font-weight: 900;
+    margin-bottom: 10px;
+    background: -webkit-linear-gradient(45deg, #FF4B4B, #ff904f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+/* 🌟 3. Interactive Hotel Cards (Hover Physics) */
+/* This transforms your columns into modern white cards with shadows */
+div[data-testid="column"] {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border: 1px solid #f0f2f6;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Make the cards float up when the mouse hovers over them */
+div[data-testid="column"]:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255, 75, 75, 0.15);
+    border-color: #FF4B4B;
+}
+
+/* 🌟 4. Premium Metric Styling (Match Score) */
+div[data-testid="stMetricValue"] {
+    color: #1E1E1E;
+    font-size: 38px;
+    font-weight: 900;
+}
+div[data-testid="stMetricLabel"] {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+}
+
+/* Hide Streamlit's default top-right menu for a cleaner website look */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
