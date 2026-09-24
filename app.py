@@ -24,6 +24,11 @@ def setup_nltk():
 
 sia = setup_nltk()
 
+# --- Helper Function to Load CSS ---
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 # --- 1. Data Mocking ---
 @st.cache_data
 def load_mock_data():
@@ -129,14 +134,17 @@ def recommend_hotels(profile_df, city, weight_food, weight_room, weight_service,
 
 # --- 5. Streamlit User Interface ---
 def main():
-    st.set_page_config(page_title="SmartStay AI", layout="wide")
+    st.set_page_config(page_title="SmartStay AI", layout="wide", page_icon="🏨")
     
-    st.title("🏨 SmartStay AI")
-    st.markdown("""
-    Standard 5-star ratings are flawed. A hotel might have great food but terrible beds. 
-    **SmartStay AI** uses Natural Language Processing (NLP) to mine unstructured text reviews, 
-    extracting sentiment for specific business aspects (Food, Room, Service, Location) to provide hyper-personalized recommendations.
-    """)
+    # LOAD THE CSS FILE YOU JUST CREATED
+    load_css("style.css")
+    
+    # Modern Centered Titles
+    st.markdown('<p class="big-font">🏨 SmartStay AI</p>', unsafe_allow_html=True)
+    st.markdown('<h4 style="text-align: center; color: #666; margin-bottom: 30px;">Your NLP-Powered Hotel Matchmaker</h4>', unsafe_allow_html=True)
+    
+    # Blue Info Box
+    st.info("✨ **How it works:** Standard 5-star ratings are flawed. A hotel might have great food but terrible beds. SmartStay AI uses **Natural Language Processing (NLP)** to mine unstructured text reviews and extract specific sentiment to provide hyper-personalized recommendations.")
     
     st.write("---")
     
@@ -156,15 +164,27 @@ def main():
     w_service = st.sidebar.slider("🛎️ Service & Staff", 0, 10, 5)
     w_loc = st.sidebar.slider("📍 Location", 0, 10, 7)
     
+    # Slide-in toast notification effect
+    st.toast(f"Searching for the best hotels in {selected_city}...", icon="🔍")
+    
     recommendations = recommend_hotels(hotel_profiles, selected_city, w_food, w_room, w_service, w_loc)
     
-    st.subheader(f"Top Recommended Hotels in {selected_city}")
+    st.subheader(f"🏆 Top Recommended Hotels in {selected_city}")
     top_3 = recommendations.head(3)
     
     cols = st.columns(3)
     for i, (index, row) in enumerate(top_3.iterrows()):
         with cols[i]:
-            st.metric(label=f"#{i+1}: {row['Hotel_Name']}", value=f"{row['Match_Score']:.1f}/10 Match")
+            # Colored boxes for 1st, 2nd, and 3rd place
+            if i == 0:
+                st.success(f"**🥇 #1 MATCH: {row['Hotel_Name']}**")
+            elif i == 1:
+                st.warning(f"**🥈 #2 MATCH: {row['Hotel_Name']}**")
+            else:
+                st.info(f"**🥉 #3 MATCH: {row['Hotel_Name']}**")
+                
+            st.metric(label="Match Score", value=f"{row['Match_Score']:.1f}/10")
+            
             st.markdown(f"""
             * **Food:** {row['Food_Score']:.1f}/10
             * **Room:** {row['Room_Score']:.1f}/10
@@ -172,13 +192,13 @@ def main():
             * **Location:** {row['Location_Score']:.1f}/10
             """)
             
-            st.markdown("**Sample Review (Text Mining):**")
+            st.markdown("**Sample Review:**")
             sample_reviews = analyzed_df[analyzed_df['Hotel_Name'] == row['Hotel_Name']]['Review_Text'].head(1).values
             if len(sample_reviews) > 0:
                 st.caption(f'"{sample_reviews[0]}"')
                 
     st.write("---")
-    with st.expander("📊 View Full Analytical Matrix (Structured Data from Unstructured Text)"):
+    with st.expander("📊 View Full Analytical Matrix (Structured Data)"):
         st.dataframe(hotel_profiles[hotel_profiles['City'] == selected_city].style.highlight_max(axis=0, subset=['Food_Score', 'Room_Score', 'Service_Score', 'Location_Score']))
         
 if __name__ == "__main__":
