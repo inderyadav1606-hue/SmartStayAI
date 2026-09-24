@@ -133,7 +133,6 @@ def main():
     
     st.title("🏨 SmartStay AI")
     st.markdown("""
-    **ZS Data Science Project Showcase**  
     Standard 5-star ratings are flawed. A hotel might have great food but terrible beds. 
     **SmartStay AI** uses Natural Language Processing (NLP) to mine unstructured text reviews, 
     extracting sentiment for specific business aspects (Food, Room, Service, Location) to provide hyper-personalized recommendations.
